@@ -30,5 +30,17 @@ returns byte string as used in pyBGAPI
             return int.to_bytes(uuid,2,'little')
     raise RuntimeError('type or length of uuid not handled')
 
+def split_addata(data) :
+    """
+break AdData into elements
 
-                                       
+returns list of parsed elements and unparsed remnant
+"""
+    result = []
+    while len(data) :
+        length = data[0]
+        if length > len(data[1:]) :
+            break
+        result.append(data[:length+1])
+        data = data[length+1:]
+    return result,data

@@ -269,7 +269,7 @@ def parse_data(data) :
     while len(data) :
         length = data[0]
         if length > len(data[1:]) :
-            rc[data[1]] = parse_element(data[1],data[2:])
+            rc[256] = data
             return rc
         else :
             rc[data[1]] = parse_element(data[1],data[2:1+length])
