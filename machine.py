@@ -111,6 +111,9 @@ class Timer :
                 self.add_internal(owner.when,owners+[owner])
             owner.callback.run()
     def cancel(self,when,owner) :
+        if None == self.owners.get(when) :
+            print('Error: cancel failed')
+            return
         l = self.owners.pop(when) 
         index = l.index(owner)
         l.pop(index)

@@ -120,6 +120,22 @@ def validate_image(image) :
 def callback_close(data) :
     debug('callback_close()')
     l.bt.connection.close(connection)
+
+class Histo :
+    def __init__(self) :
+        self.dict = {}
+    def add(self,value) :
+        count = self.dict.get(value)
+        if None == count :
+            count = 0
+        self.dict[value] = count + 1
+    def render(self) :
+        keys = list(self.dict.keys())
+        keys.sort()
+        lines = []
+        for key in keys :
+            lines.append('%d: %d'%(key,self.dict[key]))
+        return '\n'.join(lines)
     
 class Global() :
     def __init__(self) :
@@ -157,10 +173,12 @@ class Global() :
                 self.ota_started = True
                 self.ota_done = False
                 self.image = b''
+                self.histo = Histo()
                 if data != b'\x00' :
                     print('Warning: OTA started with %s'%(data.__str__()))
             else :
                 self.ota_done = True
+                debug('Histogram:\n%s"'%(self.histo.render()))
                 if data != b'\x03' :
                     print('Warning: OTA stoped with %s'%(data.__str__()))
         else :
@@ -176,6 +194,7 @@ class Global() :
         else :
             if len(data) % 4 :
                 print('Invalid data length (%d)'%(len(data)))
+            self.histo.add(len(data))
             self.image += data
             if self.application_valid :
                 self.invalidate_application()
