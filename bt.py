@@ -17,7 +17,17 @@ class BT :
                 connector = bgapi.SerialConnector(uart)
         self.bglib = bgapi.BGLib(connector,xapi)
         self.bglib.open()
-        self.api = self.bglib.bt
+        self.flavor = None
+        for flavor in ['bt','gecko','ble'] :
+            if self.bglib.__dict__.get(flavor) :
+                self.flavor = flavor
+        if 'bt' == self.flavor :
+            self.api = self.bglib.bt
+        elif 'gecko' == self.flavor :
+            self.api = self.bglib.gecko
+            print('Warning: this flavor is untested')
+        else :
+            raise RuntimeError('API flavor "%s" is not currently supported'%(self.flavor))
         self.handlers = {}
         self.connection_handlers = {}
         if None == debug :
